@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot (Essay + Poem)</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; }
+    #chatbox { width: 60%; margin: 40px auto; background: white; padding: 20px; border-radius: 10px; }
+    .message { margin: 10px 0; }
+    .user { font-weight: bold; color: blue; }
+    .bot { font-weight: bold; color: green; }
+    textarea, select, button { margin-top: 10px; padding: 10px; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="chatbox">
+    <h2>Essay & Poem Chatbot</h2>
+    <div id="messages"></div>
+    <textarea id="topic" placeholder="Enter a topic..."></textarea>
+    <select id="mode">
+      <option value="essay">Essay (OpenAI)</option>
+      <option value="poem">Poem (Ollama)</option>
+    </select>
+    <button onclick="sendMessage()">Generate</button>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const topic = document.getElementById("topic").value;
+      const mode = document.getElementById("mode").value;
+      const messagesDiv = document.getElementById("messages");
+
+      messagesDiv.innerHTML += `<div class="message user">🧑 You: ${topic}</div>`;
+
+      const endpoint = mode === "essay" ? "/api/essay" : "/api/poem";
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic })
+      });
+      const data = await response.json();
+
+      messagesDiv.innerHTML += `<div class="message bot">🤖 Bot: ${data.response}</div>`;
+    }
+  </script>
+</body>
+</html>
